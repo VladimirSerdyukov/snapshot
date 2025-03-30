@@ -17,19 +17,12 @@ public class ListInTheMap {
 
 
     public Map<String, Integer> createMap(List<String> list){
-        Map<String, Integer> map = new HashMap<>();
-
-        map = list.stream().collect(Collectors.toMap(s -> s, s -> 1, Integer::sum));
-        map.entrySet().forEach(System.out::println);
-        return map;
+        return list.stream()
+                .collect(Collectors.toMap(s -> s, s -> 1, Integer::sum));
     }
 
     public Map<String, Integer> createMap(){
-        Map<String, Integer> map = new HashMap<>();
-
-        map = list.stream().collect(Collectors.toMap(s -> s, s -> 1, Integer::sum));
-        map.entrySet().forEach(System.out::println);
-        return map;
+        return list.stream().collect(Collectors.toMap(s -> s, s -> 1, Integer::sum));
     }
 
 
