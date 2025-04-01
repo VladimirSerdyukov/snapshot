@@ -61,4 +61,8 @@ public class BankAccount {
         lock.unlock();
     }
 
+    public boolean getTryLock(){
+        return lock.tryLock();
+    }
+
 }
