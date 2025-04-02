@@ -1,50 +1,38 @@
 package org.example;
 
-
-import org.example.concurrency.BlockingQueue;
-import org.example.concurrency.Consumer;
-import org.example.concurrency.Producer;
-import org.example.iterator.ListInTheMap;
-
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
+import org.example.complexTask.ComplexTaskExecutor;
+/*
+* Слегка изменил задание для очевидности:
+* Задачи будут передаваться из main и создаваться в специальном классе CreateTask.
+* Суть тестовых задач будет, сводится к подсчету суммы в коллекциях
+* */
 public class Main {
     public static void main(String[] args) {
 
-        // Считываем лист формируем карту
-        ListInTheMap s = new ListInTheMap();
-        Map<String, Integer> d = s.createMap();
-        d.entrySet().forEach(System.out::println);
+        ComplexTaskExecutor taskExecutor = new ComplexTaskExecutor(5); // Количество задач для выполнения
 
-        // Задача по очереди и пулам
-        BlockingQueue<Integer> queue = new BlockingQueue<>(10);
+        Runnable testRunnable = () -> {
+            System.out.println(Thread.currentThread().getName() + " started the test.");
 
-        // Создаем пулы потоков
-        ExecutorService producerPool = Executors.newFixedThreadPool(3);
-        ExecutorService consumerPool = Executors.newFixedThreadPool(2);
+            // Выполнение задач
+            taskExecutor.executeTasks(5);
 
-        // Запускаем производителей
-        for (int i = 0; i < 3; i++) {
-            producerPool.execute(new Producer(queue, i));
-        }
+            System.out.println(Thread.currentThread().getName() + " completed the test.");
+        };
 
-        // Запускаем потребителей
-        for (int i = 0; i < 2; i++) {
-            consumerPool.execute(new Consumer(queue, i));
-        }
+        Thread thread1 = new Thread(testRunnable, "TestThread-1");
+        Thread thread2 = new Thread(testRunnable, "TestThread-2");
 
-        // Ждем завершения всех задач
-        producerPool.shutdown();
+        thread1.start();
+        thread2.start();
+
         try {
-            producerPool.awaitTermination(1, TimeUnit.MINUTES);
+            thread1.join();
+            thread2.join();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
-        // Завершаем работу
-        consumerPool.shutdownNow();
     }
 }
+
 
