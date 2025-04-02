@@ -20,26 +20,27 @@ public class ConcurrentBankTryLock implements ConcurrentBank {
 
     public void transfer(BankAccount transmittingAccount, BankAccount receivingAccount, Long deposit) {
         LocalDateTime timeStart = LocalDateTime.now();
-        System.out.println(timeStart);
         while (true) {
             if (transmittingAccount.getTryLock() & receivingAccount.getTryLock()) {
                 try {
                     transmittingAccount.acquireLock();
                     receivingAccount.acquireLock();
-
+                    System.out.println("Мьютексы захвачены "  + Thread.currentThread().getName());
                     if (transmittingAccount.withdraw(deposit)) {
                         if (!receivingAccount.deposit(deposit)) {
                             transmittingAccount.deposit(deposit);
+                            System.out.println("Операция выполнена " + Thread.currentThread().getName());
                         }
                     }
                 } finally {
                     transmittingAccount.giveAwayLock();
                     receivingAccount.giveAwayLock();
+                    System.out.println("Блокировки сняты "  + Thread.currentThread().getName());
                 }
             }
 
-            if(timeStart.plusSeconds(3).compareTo(LocalDateTime.now().plusSeconds(10)) == -1){
-                System.out.println("Долгое ожидание выполнения транзакции!");
+            if(timeStart.plusSeconds(3).compareTo(LocalDateTime.now()) == -1){
+                System.out.println("Долгое ожидание выполнения транзакции! " + Thread.currentThread().getName());
                 return;
             }
         }

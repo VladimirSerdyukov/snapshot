@@ -15,18 +15,18 @@ public class BankMain {
         BankAccount account3 = bankTry.createAccount(1000L);
         BankAccount account4 = bankTry.createAccount(1000L);
 
-        ExecutorService executorServiceCompare = Executors.newFixedThreadPool(5);
+        ExecutorService executorServiceCompare = Executors.newFixedThreadPool(2);
+
         for (int i = 0; i < 5; i++) {
             executorServiceCompare.execute(new ListTransactionOne(i + "_name", account1, account2, bankCompare));
         }
         executorServiceCompare.shutdown();
 
-        ExecutorService executorServiceTry = Executors.newFixedThreadPool(5);
+        ExecutorService executorServiceTry = Executors.newFixedThreadPool(2);
         for (int i = 0; i < 5; i++) {
             executorServiceTry.execute(new ListTransactionOne(i + "_name", account3, account4, bankTry));
         }
-        executorServiceCompare.shutdown();
-
+        executorServiceTry.shutdown();
 
 
 //        // Перевод между счетами
