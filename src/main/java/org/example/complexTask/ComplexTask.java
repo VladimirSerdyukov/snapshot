@@ -2,21 +2,26 @@ package org.example.complexTask;
 
 import java.util.concurrent.Callable;
 
-public class ComplexTask implements Callable<Integer> {
-
-    String name = "Task :";
+public class ComplexTask implements Runnable {
+    private Integer result;
+    private String name = "Task :";
 
     public ComplexTask(int namePrefix){
         this.name = name + namePrefix;
     }
 
-    public Integer execute(){
-        System.out.println("Выполнение сверхсложной задачи");
-        return (int) (Math.random() * 10);
+    public void execute(){
+        result = (int) (Math.random() * 10);
+        System.out.println("Number :" + result);
     }
 
     @Override
-    public Integer call() throws Exception {
-        return execute();
+    public void run() {
+        execute();
+    }
+
+
+    public Integer getResult() {
+        return result;
     }
 }
