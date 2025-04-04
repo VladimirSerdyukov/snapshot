@@ -16,4 +16,12 @@ public class Order {
     public double getCost() {
         return cost;
     }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "product='" + product + '\'' +
+                ", cost=" + cost +
+                '}';
+    }
 }
